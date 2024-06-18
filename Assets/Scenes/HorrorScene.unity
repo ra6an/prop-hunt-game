@@ -8080,6 +8080,10 @@ PrefabInstance:
       propertyPath: promptText
       value: 
       objectReference: {fileID: 1205915246}
+    - target: {fileID: 245571583, guid: 0bc70b013fceb8e4293be270f977ea9a, type: 3}
+      propertyPath: lerpCrouch
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1846815296335900136, guid: 0bc70b013fceb8e4293be270f977ea9a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.999

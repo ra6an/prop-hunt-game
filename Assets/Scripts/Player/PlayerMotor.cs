@@ -71,12 +71,17 @@ public class PlayerMotor : NetworkBehaviour
         HandleMovement();
 
         HandleCrouch();
-        //Debug.Log(crouching.Value);
+    }
+
+    public bool IsPlayerGrounded()
+    {
+        return isGrounded;
     }
 
     private void HandleMovement()
     {
-        isGrounded = controller.isGrounded;
+        //isGrounded = controller.isGrounded;
+        GroundCheck();
 
         if (isGrounded && playerVelocity.y < 0)
         {
@@ -84,7 +89,6 @@ public class PlayerMotor : NetworkBehaviour
         }
 
         playerVelocity.y += gravity * Time.deltaTime;
-
         controller.Move(playerVelocity * Time.deltaTime);
 
         if (moveDirection == Vector3.zero && currentVelocity != Vector3.zero)
@@ -92,6 +96,18 @@ public class PlayerMotor : NetworkBehaviour
             float decel = isGrounded ? deceleration : airDeceleration;
             currentVelocity = Vector3.MoveTowards(currentVelocity, Vector3.zero, decel * Time.deltaTime);
         }
+    }
+
+    private void GroundCheck()
+    {
+        Vector3 start = transform.position + Vector3.up * 0.1f;
+        float rayLength = 0.2f;
+
+        isGrounded = Physics.Raycast(start, Vector3.down, rayLength);
+        //IF I WANT DOUBLE JUMP
+        //Vector3 start = transform.position + Vector3.up * (controller.height / 2);
+        //Vector3 end = transform.position + Vector3.down * (controller.height / 2 + 0.1f);
+        //isGrounded = Physics.Raycast(start, Vector3.down, (controller.height / 2 + 0.1f));
     }
 
     private void HandleCrouch()
@@ -133,6 +149,7 @@ public class PlayerMotor : NetworkBehaviour
     {
         if(isGrounded)
         {
+            Debug.Log("Jumped");
             playerVelocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravity);
         }
     }
@@ -146,9 +163,22 @@ public class PlayerMotor : NetworkBehaviour
             CrouchServerRpc(!crouching.Value);
         }
     }
-            //Debug.Log($"Crouvhing Value Before: {crouching.Value}");
-            //crouching.Value = !crouching.Value;
-            //Debug.Log($"Crouvhing Value After: {crouching.Value}");
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        originalHeight = controller.height;
+        originalCenterY = controller.center.y;
+        crouchCenterY = crouchHeight / 2f;
+
+        playerVelocity = Vector3.zero;
+
+        if (IsServer)
+        {
+            crouching.OnValueChanged += OnCrouchChanged;
+        }
+    }
 
     private void OnEnable()
     {
@@ -164,12 +194,10 @@ public class PlayerMotor : NetworkBehaviour
     private void CrouchServerRpc(bool isCrouching)
     {
         crouching.Value = isCrouching;
-        Debug.Log($"CrouchServerRpc VALUE: {isCrouching}");
     }
 
     private void OnCrouchChanged(bool oldValue, bool newValue)
     {
-        Debug.Log($"OnCrouchStateChanged - new state: {newValue}");
         crouchTimer = 0f;
         lerpCrouch = true;
     }

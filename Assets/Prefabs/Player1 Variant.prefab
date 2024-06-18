@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1045492105}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.000000029802322, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -879,15 +879,19 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: bc89b829fd9441b40b04d6c9b0e6b73b, type: 2}
+    - target: {fileID: 95984852126199364, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4188785271684938, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1045492106}
+      addedObject: {fileID: 6524557804468940490}
     - targetCorrespondingSourceObject: {fileID: 4188785271684938, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6524557804468940490}
+      addedObject: {fileID: 1045492106}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1135223553736032, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
       insertIndex: -1
@@ -925,6 +929,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1135223553736032, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3856631037968952086}
+    - targetCorrespondingSourceObject: {fileID: 1135223553736032, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7607808177441416049}
     - targetCorrespondingSourceObject: {fileID: 1033852702106798, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3481761970206165101}
@@ -1450,76 +1457,6 @@ MonoBehaviour:
   - {fileID: 3883813695657280944}
   - {fileID: 1728833561}
   - {fileID: 1728833562}
-  playerName:
-    m_InternalValue:
-      utf8LengthInBytes: 0
-      bytes:
-        offset0000:
-          byte0000: 0
-          byte0001: 0
-          byte0002: 0
-          byte0003: 0
-          byte0004: 0
-          byte0005: 0
-          byte0006: 0
-          byte0007: 0
-          byte0008: 0
-          byte0009: 0
-          byte0010: 0
-          byte0011: 0
-          byte0012: 0
-          byte0013: 0
-          byte0014: 0
-          byte0015: 0
-        offset0016:
-          byte0000: 0
-          byte0001: 0
-          byte0002: 0
-          byte0003: 0
-          byte0004: 0
-          byte0005: 0
-          byte0006: 0
-          byte0007: 0
-          byte0008: 0
-          byte0009: 0
-          byte0010: 0
-          byte0011: 0
-          byte0012: 0
-          byte0013: 0
-          byte0014: 0
-          byte0015: 0
-        offset0032:
-          byte0000: 0
-          byte0001: 0
-          byte0002: 0
-          byte0003: 0
-          byte0004: 0
-          byte0005: 0
-          byte0006: 0
-          byte0007: 0
-          byte0008: 0
-          byte0009: 0
-          byte0010: 0
-          byte0011: 0
-          byte0012: 0
-          byte0013: 0
-          byte0014: 0
-          byte0015: 0
-        byte0048: 0
-        byte0049: 0
-        byte0050: 0
-        byte0051: 0
-        byte0052: 0
-        byte0053: 0
-        byte0054: 0
-        byte0055: 0
-        byte0056: 0
-        byte0057: 0
-        byte0058: 0
-        byte0059: 0
-        byte0060: 0
-        byte0061: 0
-  playerNameDisplay: {fileID: 913120105319324484}
   remoteLayerName: RemotePlayer
 --- !u!114 &235637467369329270
 MonoBehaviour:
@@ -1622,6 +1559,18 @@ MonoBehaviour:
     TriggerNameHash: 125937960
     TransitionIndex: 0
   m_Animator: {fileID: 1799984790439443686}
+--- !u!114 &7607808177441416049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849815533820211138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7079870a595046049a056d92b1268f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1849841416453253306 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1163146189552152, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}

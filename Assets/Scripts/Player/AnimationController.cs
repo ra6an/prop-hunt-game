@@ -9,25 +9,27 @@ public class AnimationController : NetworkBehaviour
     private Animator animator;
     private PlayerInput playerInput;
     public PlayerInput.OnFootActions onFoot;
+    private PlayerMotor motor;
 
 
     private void Awake()
     {
-        Debug.Log("Awake");
+        //Debug.Log("Awake");
         animator = GetComponent<Animator>();
+        motor = GetComponent<PlayerMotor>();
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
     }
     private void OnEnable()
     {
-        Debug.Log("On enable called");
+        //Debug.Log("On enable called");
         playerInput.Enable();
         SubscribeActions();
     }
 
     private void OnDisable()
     {
-        Debug.Log("On disable called");
+        //Debug.Log("On disable called");
         playerInput.Disable();
     }
 
@@ -88,8 +90,10 @@ public class AnimationController : NetworkBehaviour
 
     public void OnJump()
     {
-        Debug.Log("OnJump");
-        animator.SetTrigger("Jump");
+        if(motor.IsPlayerGrounded())
+        {
+            animator.SetTrigger("Jump");
+        }
     }
 
     public void OnCrouch()
