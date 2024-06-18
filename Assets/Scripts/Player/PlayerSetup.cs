@@ -26,7 +26,7 @@ public class PlayerSetup : NetworkBehaviour
         if(!IsLocalPlayer)
         {
             DisableComponents();
-            AssignRemoteRaley();
+            AssignRemotePlayer();
         }
         else
         {
@@ -66,8 +66,9 @@ public class PlayerSetup : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-
+        if (!IsLocalPlayer) return;
         string _netID = NetworkManager.Singleton.LocalClientId.ToString();
+        Debug.Log(_netID);
         PlayerManager _player = GetComponent<PlayerManager>();
 
         GameManager.RegisterPlayer(_netID, _player);
@@ -79,7 +80,7 @@ public class PlayerSetup : NetworkBehaviour
         //Debug.Log(NetworkManager.Singleton.LocalClientId + " Is Online!");
     }
 
-    void AssignRemoteRaley()
+    void AssignRemotePlayer()
     {
         gameObject.layer = LayerMask.NameToLayer(remoteLayerName);
     }
