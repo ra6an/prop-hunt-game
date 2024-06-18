@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class AnimationController : NetworkBehaviour
 {
+    [SerializeField]
+    private GameObject player;
     private Animator animator;
     private PlayerInput playerInput;
     public PlayerInput.OnFootActions onFoot;
@@ -15,7 +17,8 @@ public class AnimationController : NetworkBehaviour
     private void Awake()
     {
         //Debug.Log("Awake");
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
+        animator = player.GetComponent<Animator>();
         motor = GetComponent<PlayerMotor>();
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;

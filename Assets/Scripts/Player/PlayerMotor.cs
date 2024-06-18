@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class PlayerMotor : NetworkBehaviour
 {
     private CharacterController controller;
+    private PlayerLook playerLook;
 
     private Vector3 playerVelocity;
     private Vector3 currentVelocity;
@@ -48,6 +49,7 @@ public class PlayerMotor : NetworkBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        playerLook = GetComponent<PlayerLook>();
 
         currentSpeed = speed;
     }
@@ -200,6 +202,11 @@ public class PlayerMotor : NetworkBehaviour
     {
         crouchTimer = 0f;
         lerpCrouch = true;
+
+        if (playerLook != null)
+        {
+            playerLook.SetCrouching(newValue);
+        }
     }
 
     public void SetSprinting(bool isSprinting)
