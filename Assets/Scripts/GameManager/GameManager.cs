@@ -6,41 +6,13 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    //public static GameManager Instance { get; private set; }
-
-    //private const string PLAYER_ID_PREFIX = "";
     private const string PLAYER_ID_PREFIX = "Player ";
 
     private static Dictionary<string, PlayerManager> players = new Dictionary<string, PlayerManager>();
 
-    //private void Awake()
-    //{
-        //if (Instance == null)
-        //{
-        //    Instance = this;
-        //players = new Dictionary<string, PlayerManager>();
-        //}
-        //else
-        //{
-        //    Debug.LogWarning("Duplicate GameManager instance found. Destroying this one.");
-        //    Destroy(gameObject);
-        //}
-    //}
 
     private void Start()
     {
-        //NetworkManager.Singleton.OnClientConnectedCallback += id =>
-        //{
-            //string playerName = PLAYER_ID_PREFIX + id.ToString();
-            //Debug.Log(playerName);
-            //players.Add(playerName, playerName);
-
-            //if(IsServer)
-            //{
-
-            //Debug.Log(playerName);
-            //}
-        //};
     }
 
     public static void RegisterPlayer(string _netID, PlayerManager _player)

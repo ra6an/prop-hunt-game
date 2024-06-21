@@ -58,9 +58,8 @@ public class PlayerLook : MonoBehaviour
     {
         if (lerpCrouch)
         {
-            Debug.Log("Crouching");
             crouchTimer += Time.deltaTime * crouchTransitionSpeed;
-            float targetHeight = isCrouching ? cameraOffset.y - crouchHeightAdjustment : cameraOffset.y;
+            float targetHeight = isCrouching ? initialCameraPosition.y - crouchHeightAdjustment : initialCameraPosition.y;
             cam.transform.localPosition = new Vector3(cameraOffset.x, Mathf.Lerp(cam.transform.localPosition.y, targetHeight, crouchTimer), cameraOffset.z);
 
             if (crouchTimer >= 1f)

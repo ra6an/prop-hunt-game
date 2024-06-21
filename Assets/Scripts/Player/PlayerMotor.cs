@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,6 +10,9 @@ public class PlayerMotor : NetworkBehaviour
 {
     private CharacterController controller;
     private PlayerLook playerLook;
+
+    private Animator animator;
+    private ClientNetworkAnimator clientNetworkAnimator;
 
     private Vector3 playerVelocity;
     private Vector3 currentVelocity;
@@ -46,10 +50,17 @@ public class PlayerMotor : NetworkBehaviour
 
     private float currentSpeed = 0f;
 
+    //TESTING PURPOSE
+    public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>(new Vector3(0f,0f,0f), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>(new Quaternion(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         playerLook = GetComponent<PlayerLook>();
+
+        animator = GetComponentInChildren<Animator>();
+        clientNetworkAnimator = GetComponentInChildren<ClientNetworkAnimator>();
 
         currentSpeed = speed;
     }
@@ -61,7 +72,7 @@ public class PlayerMotor : NetworkBehaviour
         originalHeight = controller.height;
         originalCenterY = controller.center.y;
         crouchCenterY = crouchHeight / 2f;
-        
+
         playerVelocity = Vector3.zero;
 
         crouching.OnValueChanged += OnCrouchChanged;
@@ -70,8 +81,25 @@ public class PlayerMotor : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleMovement();
+        if (IsOwner)
+        {
+            // Update position and rotation based on player input
+            Vector3 newPosition = transform.position; // Your position calculation
+            Quaternion newRotation = transform.rotation; // Your rotation calculation
 
+            Position.Value = newPosition;
+            Rotation.Value = newRotation;
+            Debug.Log($"Owner - Position: {newPosition}, Rotation: {newRotation}");
+        }
+        else
+        {
+            // Apply synchronized position and rotation for clients
+            Debug.Log($"Client - Position: {Position.Value}, Rotation: {Rotation.Value}");
+            transform.position = Position.Value;
+            transform.rotation = Rotation.Value;
+        }
+
+        HandleMovement();
         HandleCrouch();
     }
 
@@ -82,12 +110,11 @@ public class PlayerMotor : NetworkBehaviour
 
     private void HandleMovement()
     {
-        //isGrounded = controller.isGrounded;
         GroundCheck();
 
         if (isGrounded && playerVelocity.y < 0)
         {
-            playerVelocity.y = -2f; // Small negative value to keep the player grounded
+            playerVelocity.y = -2f;
         }
 
         playerVelocity.y += gravity * Time.deltaTime;
@@ -106,10 +133,6 @@ public class PlayerMotor : NetworkBehaviour
         float rayLength = 0.2f;
 
         isGrounded = Physics.Raycast(start, Vector3.down, rayLength);
-        //IF I WANT DOUBLE JUMP
-        //Vector3 start = transform.position + Vector3.up * (controller.height / 2);
-        //Vector3 end = transform.position + Vector3.down * (controller.height / 2 + 0.1f);
-        //isGrounded = Physics.Raycast(start, Vector3.down, (controller.height / 2 + 0.1f));
     }
 
     private void HandleCrouch()
@@ -143,6 +166,7 @@ public class PlayerMotor : NetworkBehaviour
         float accel = isGrounded ? acceleration : airAcceleration;
         float _fixedSpeed = crouching.Value ? crouchSpeed : currentSpeed;
         moveDirection = desiredMoveDirection * _fixedSpeed;
+
         currentVelocity = Vector3.MoveTowards(currentVelocity, moveDirection, accel * Time.deltaTime);
         controller.Move(currentVelocity * Time.deltaTime);
     }
@@ -151,8 +175,9 @@ public class PlayerMotor : NetworkBehaviour
     {
         if(isGrounded)
         {
-            Debug.Log("Jumped");
             playerVelocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravity);
+
+            JumpServerRpc();
         }
     }
 
@@ -207,6 +232,12 @@ public class PlayerMotor : NetworkBehaviour
         {
             playerLook.SetCrouching(newValue);
         }
+    }
+
+    [ServerRpc]
+    private void JumpServerRpc()
+    {
+        playerVelocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravity);
     }
 
     public void SetSprinting(bool isSprinting)

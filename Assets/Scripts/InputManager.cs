@@ -26,8 +26,6 @@ public class InputManager : MonoBehaviour
         onFoot.Jump.performed += ctx => motor.Jump();
 
         //Crouching
-        //onFoot.Crouch.started += ctx => motor.SetCrouching(true);
-        //onFoot.Crouch.canceled += ctx => motor.SetCrouching(false);
         onFoot.Crouch.performed += ctx => motor.Crouch();
         onFoot.Crouch.canceled += ctx => motor.Crouch();
 
@@ -42,7 +40,6 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        
     }
 
     // Update is called once per frame

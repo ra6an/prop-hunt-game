@@ -8,8 +8,6 @@ public class PlayerSetup : NetworkBehaviour
 {
     [SerializeField]
     Behaviour[] componentsToDisable;
-    //[SerializeField]
-    //public NetworkVariable<FixedString64Bytes> playerName;
 
 
     [SerializeField]
@@ -36,33 +34,8 @@ public class PlayerSetup : NetworkBehaviour
                 sceneCamera.gameObject.SetActive(false);
             }
         }
-        //StartCoroutine(RenamePlayerHandler());
     }
 
-    //private IEnumerator RenamePlayerHandler()
-    //{
-    //        yield return new WaitUntil(() => NetworkManager.Singleton.IsConnectedClient);
-    //    if (IsLocalPlayer)
-    //    {
-    //        Debug.Log("Teest");
-    //        RenamePlayerServerRpc($"Player_{NetworkManager.Singleton.LocalClientId}");
-    //    }
-    //}
-
-    //[ServerRpc]
-    //private void RenamePlayerServerRpc(string newPlayerName)
-    //{
-    //    playerName.Value = newPlayerName;
-    //}
-
-    //private void OnPlayerNameChanged(FixedString64Bytes oldValue, FixedString64Bytes newValue)
-    //{
-    //    Debug.Log("Renamea playera");
-    //    transform.gameObject.name = newValue.ToString();
-    //    playerNameDisplay.text = newValue.ToString();
-    //}
-
-    //public override void OnStartClient() { }
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -72,12 +45,6 @@ public class PlayerSetup : NetworkBehaviour
         PlayerManager _player = GetComponent<PlayerManager>();
 
         GameManager.RegisterPlayer(_netID, _player);
-    }
-
-    [ServerRpc]
-    void PlayerLoggedServerRpc()
-    {
-        //Debug.Log(NetworkManager.Singleton.LocalClientId + " Is Online!");
     }
 
     void AssignRemotePlayer()
@@ -92,11 +59,6 @@ public class PlayerSetup : NetworkBehaviour
             componentsToDisable[i].enabled = false;
         }
     }
-    //private void OnEnable()
-    //{
-    //    playerName = new NetworkVariable<FixedString64Bytes>(new FixedString64Bytes(""));
-    //    playerName.OnValueChanged += OnPlayerNameChanged;
-    //}
 
     private void OnDisable()
     {
@@ -106,6 +68,5 @@ public class PlayerSetup : NetworkBehaviour
         }
 
         GameManager.UnRegisterPlayer(transform.name);
-        //playerName.OnValueChanged -= OnPlayerNameChanged;
     }
 }
