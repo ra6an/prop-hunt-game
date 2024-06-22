@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 616807953114298198}
   - component: {fileID: 7706021897124146324}
   - component: {fileID: 2537359465425467402}
+  - component: {fileID: 2173439278327041428}
   - component: {fileID: 7235511516522373302}
   - component: {fileID: 1812200719072983413}
   - component: {fileID: 8346924917162139872}
@@ -114,7 +115,6 @@ GameObject:
   - component: {fileID: 7788202513482350344}
   - component: {fileID: 7966210648300856493}
   - component: {fileID: 9168204437048140428}
-  - component: {fileID: 771753040605273389}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -137,7 +137,6 @@ Transform:
   m_Children:
   - {fileID: 6904950459403764818}
   - {fileID: 638661555411323437}
-  - {fileID: 4734462489449297079}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &616807953114298198
@@ -178,7 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2486855628
+  GlobalObjectIdHash: 28660499
   InScenePlacedSourceGlobalObjectIdHash: 28660499
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -218,6 +217,41 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &2173439278327041428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875999326499137998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad8deae8091111f4eb30a56c1f4e0d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 229373857
+    DestinationState: 125937960
+    TransitionDuration: 0.25
+    TriggerNameHash: 125937960
+    TransitionIndex: 2
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -2032366093
+    DestinationState: 125937960
+    TransitionDuration: 0.25
+    TriggerNameHash: 125937960
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -526601997
+    DestinationState: 125937960
+    TransitionDuration: 0.25
+    TriggerNameHash: 125937960
+    TransitionIndex: 0
+  m_Animator: {fileID: 6811887678394127708}
 --- !u!114 &7235511516522373302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,6 +284,8 @@ MonoBehaviour:
   crouchHeightAdjustment: 0.5
   crouchTransitionSpeed: 5
   initialCameraPosition: {x: 0, y: 0, z: 0}
+  cameraPosition:
+    m_InternalValue: 0
 --- !u!114 &8346924917162139872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,13 +333,6 @@ MonoBehaviour:
   sprinting: 0
   crouching:
     m_InternalValue: 0
-  CameraRotation:
-    m_InternalValue: {x: 0, y: 0, z: 0, w: 0}
-  Position:
-    m_InternalValue: {x: 0, y: 0, z: 0}
-  Rotation:
-    m_InternalValue: {x: 0, y: 0, z: 0, w: 0}
-  crouchingLastHeight: 0
 --- !u!114 &2714544493539873504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,72 +424,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7079870a595046049a056d92b1268f6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &771753040605273389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 875999326499137998}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad8deae8091111f4eb30a56c1f4e0d3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 229373857
-    DestinationState: 125937960
-    TransitionDuration: 0.25
-    TriggerNameHash: 125937960
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -2032366093
-    DestinationState: 125937960
-    TransitionDuration: 0.25
-    TriggerNameHash: 125937960
-    TransitionIndex: 0
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -526601997
-    DestinationState: 125937960
-    TransitionDuration: 0.25
-    TriggerNameHash: 125937960
-    TransitionIndex: 0
-  m_Animator: {fileID: 6811887678394127708}
---- !u!1 &8342463390432002868
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4734462489449297079}
-  m_Layer: 0
-  m_Name: Camera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &4734462489449297079
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8342463390432002868}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5031223158121678410}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &6907869226598808344
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -888,6 +888,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Hud",
+            "id": "d225ff67-3f06-4f01-88a9-78448ab12cc1",
+            "actions": [
+                {
+                    "name": "Players",
+                    "type": "Button",
+                    "id": "eb45a827-bf27-4e40-85c9-133992389195",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "5d081d85-d93e-48f6-b157-0a673d715d3d",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Players",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

@@ -910,6 +910,34 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Hud"",
+            ""id"": ""d225ff67-3f06-4f01-88a9-78448ab12cc1"",
+            ""actions"": [
+                {
+                    ""name"": ""Players"",
+                    ""type"": ""Button"",
+                    ""id"": ""eb45a827-bf27-4e40-85c9-133992389195"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""5d081d85-d93e-48f6-b157-0a673d715d3d"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Players"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -939,6 +967,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         // Developer
         m_Developer = asset.FindActionMap("Developer", throwIfNotFound: true);
         m_Developer_Console = m_Developer.FindAction("Console", throwIfNotFound: true);
+        // Hud
+        m_Hud = asset.FindActionMap("Hud", throwIfNotFound: true);
+        m_Hud_Players = m_Hud.FindAction("Players", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1262,6 +1293,52 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public DeveloperActions @Developer => new DeveloperActions(this);
+
+    // Hud
+    private readonly InputActionMap m_Hud;
+    private List<IHudActions> m_HudActionsCallbackInterfaces = new List<IHudActions>();
+    private readonly InputAction m_Hud_Players;
+    public struct HudActions
+    {
+        private @PlayerInput m_Wrapper;
+        public HudActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Players => m_Wrapper.m_Hud_Players;
+        public InputActionMap Get() { return m_Wrapper.m_Hud; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(HudActions set) { return set.Get(); }
+        public void AddCallbacks(IHudActions instance)
+        {
+            if (instance == null || m_Wrapper.m_HudActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_HudActionsCallbackInterfaces.Add(instance);
+            @Players.started += instance.OnPlayers;
+            @Players.performed += instance.OnPlayers;
+            @Players.canceled += instance.OnPlayers;
+        }
+
+        private void UnregisterCallbacks(IHudActions instance)
+        {
+            @Players.started -= instance.OnPlayers;
+            @Players.performed -= instance.OnPlayers;
+            @Players.canceled -= instance.OnPlayers;
+        }
+
+        public void RemoveCallbacks(IHudActions instance)
+        {
+            if (m_Wrapper.m_HudActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IHudActions instance)
+        {
+            foreach (var item in m_Wrapper.m_HudActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_HudActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public HudActions @Hud => new HudActions(this);
     public interface IOnFootActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -1289,5 +1366,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     public interface IDeveloperActions
     {
         void OnConsole(InputAction.CallbackContext context);
+    }
+    public interface IHudActions
+    {
+        void OnPlayers(InputAction.CallbackContext context);
     }
 }

@@ -7,20 +7,24 @@ public class InputManager : MonoBehaviour
 {
     private PlayerInput playerInput;
     public PlayerInput.OnFootActions onFoot;
+    public PlayerInput.HudActions hud;
 
     private PlayerMotor motor;
     private PlayerLook look;
     private PlayerShoot shoot;
+    private PlayerUI playerUI;
 
     // Start is called before the first frame update
     void Awake()
     {
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
+        hud = playerInput.Hud;
 
         motor = GetComponent<PlayerMotor>();
         look = GetComponent<PlayerLook>();
         shoot = GetComponent<PlayerShoot>();
+        playerUI = GetComponent<PlayerUI>();
 
         //Jumping
         onFoot.Jump.performed += ctx => motor.Jump();
@@ -36,6 +40,10 @@ public class InputManager : MonoBehaviour
         // Shooting
         onFoot.Shoot.started += ctx => shoot.SetShooting(true);
         onFoot.Shoot.canceled += ctx => shoot.SetShooting(false);
+
+        // Score
+        hud.Players.started += ctx => playerUI.ShowPlayersScore(true);
+        hud.Players.canceled += ctx => playerUI.ShowPlayersScore(false);
     }
 
     private void Update()
@@ -59,9 +67,11 @@ public class InputManager : MonoBehaviour
     private void OnEnable()
     {
         onFoot.Enable();
+        hud.Enable();
     }
     private void OnDisable()
     {
         onFoot.Disable();
+        hud.Disable();
     }
 }
