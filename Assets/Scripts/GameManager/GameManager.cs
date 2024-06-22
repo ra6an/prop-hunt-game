@@ -1,3 +1,4 @@
+using Console;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,13 +7,24 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    //public static GameManager Instance { get; private set; }
+
     private const string PLAYER_ID_PREFIX = "Player ";
 
     private static Dictionary<string, PlayerManager> players = new Dictionary<string, PlayerManager>();
 
+    private void Awake()
+    {
+        //if(Instance == null)
+        //{
+        //    Instance = this;
+        //}
+    }
 
     private void Start()
     {
+        //playerInput = new PlayerInput();
+        //dev = playerInput.Developer;
     }
 
     public static void RegisterPlayer(string _netID, PlayerManager _player)

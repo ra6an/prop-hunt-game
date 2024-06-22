@@ -882,6 +882,34 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Developer"",
+            ""id"": ""023c2057-d941-41a8-9cfe-20e0eff1cfa0"",
+            ""actions"": [
+                {
+                    ""name"": ""Console"",
+                    ""type"": ""Button"",
+                    ""id"": ""f811da8b-7fcb-4e22-9775-3f1912ff7664"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6e6b4849-1741-4b3f-a469-bedb947c7a50"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Console"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -908,6 +936,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
+        // Developer
+        m_Developer = asset.FindActionMap("Developer", throwIfNotFound: true);
+        m_Developer_Console = m_Developer.FindAction("Console", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1185,6 +1216,52 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+
+    // Developer
+    private readonly InputActionMap m_Developer;
+    private List<IDeveloperActions> m_DeveloperActionsCallbackInterfaces = new List<IDeveloperActions>();
+    private readonly InputAction m_Developer_Console;
+    public struct DeveloperActions
+    {
+        private @PlayerInput m_Wrapper;
+        public DeveloperActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Console => m_Wrapper.m_Developer_Console;
+        public InputActionMap Get() { return m_Wrapper.m_Developer; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DeveloperActions set) { return set.Get(); }
+        public void AddCallbacks(IDeveloperActions instance)
+        {
+            if (instance == null || m_Wrapper.m_DeveloperActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DeveloperActionsCallbackInterfaces.Add(instance);
+            @Console.started += instance.OnConsole;
+            @Console.performed += instance.OnConsole;
+            @Console.canceled += instance.OnConsole;
+        }
+
+        private void UnregisterCallbacks(IDeveloperActions instance)
+        {
+            @Console.started -= instance.OnConsole;
+            @Console.performed -= instance.OnConsole;
+            @Console.canceled -= instance.OnConsole;
+        }
+
+        public void RemoveCallbacks(IDeveloperActions instance)
+        {
+            if (m_Wrapper.m_DeveloperActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IDeveloperActions instance)
+        {
+            foreach (var item in m_Wrapper.m_DeveloperActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_DeveloperActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public DeveloperActions @Developer => new DeveloperActions(this);
     public interface IOnFootActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -1208,5 +1285,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
+    }
+    public interface IDeveloperActions
+    {
+        void OnConsole(InputAction.CallbackContext context);
     }
 }

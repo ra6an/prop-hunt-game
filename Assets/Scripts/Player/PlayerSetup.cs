@@ -6,6 +6,9 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerManager))]
 public class PlayerSetup : NetworkBehaviour
 {
+    public GameObject cameraPrefab;
+    private GameObject cameraInstance;
+
     [SerializeField]
     Behaviour[] componentsToDisable;
 
@@ -33,6 +36,15 @@ public class PlayerSetup : NetworkBehaviour
             {
                 sceneCamera.gameObject.SetActive(false);
             }
+
+            //cameraInstance = Instantiate(cameraPrefab);
+            //cameraInstance.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+            //cameraInstance.transform.SetParent(transform);
+            //cameraInstance.transform.localPosition = new Vector3(0f, 1.7f, 0f);
+
+            //transform.GetComponent<PlayerLook>().cam = cameraInstance.GetComponent<Camera>();
+            //transform.GetComponent<PlayerShoot>().cam = cameraInstance.GetComponent<Camera>();
+            //componentsToDisable.add
         }
     }
 

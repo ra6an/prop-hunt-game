@@ -6,7 +6,7 @@ public class PlayerShoot : NetworkBehaviour
     private const string PLAYER_TAG = "PlayerBody";
     public PlayerWeapon weapon;
     [SerializeField]
-    private Camera cam;
+    public Camera cam;
 
     [SerializeField]
     private LayerMask mask;

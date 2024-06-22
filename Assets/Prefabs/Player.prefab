@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 638661555411323437}
   - component: {fileID: 7915850110866431105}
   - component: {fileID: 1010923369920645757}
-  - component: {fileID: 2044472039474236358}
-  - component: {fileID: 272567102323643758}
   m_Layer: 7
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -94,58 +92,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 476777191628904080}
   m_Enabled: 1
---- !u!114 &2044472039474236358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 476777191628904080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2486855628
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
---- !u!114 &272567102323643758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 476777191628904080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseUnreliableDeltas: 0
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 1
-  UseQuaternionCompression: 1
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  Interpolate: 1
-  SlerpPosition: 0
 --- !u!1 &875999326499137998
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,6 +114,7 @@ GameObject:
   - component: {fileID: 7788202513482350344}
   - component: {fileID: 7966210648300856493}
   - component: {fileID: 9168204437048140428}
+  - component: {fileID: 771753040605273389}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -302,6 +249,7 @@ MonoBehaviour:
   cameraOffset: {x: 0, y: 1.7, z: 0}
   crouchHeightAdjustment: 0.5
   crouchTransitionSpeed: 5
+  initialCameraPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &8346924917162139872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,10 +297,13 @@ MonoBehaviour:
   sprinting: 0
   crouching:
     m_InternalValue: 0
+  CameraRotation:
+    m_InternalValue: {x: 0, y: 0, z: 0, w: 0}
   Position:
     m_InternalValue: {x: 0, y: 0, z: 0}
   Rotation:
     m_InternalValue: {x: 0, y: 0, z: 0, w: 0}
+  crouchingLastHeight: 0
 --- !u!114 &2714544493539873504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,9 +328,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bef17a319504b8d4ab5d610a5237638d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraPrefab: {fileID: 4432232711491410803, guid: 81536853026843e48a7045b3880fd201, type: 3}
   componentsToDisable:
-  - {fileID: 6239504704395550990}
-  - {fileID: 1812200719072983413}
+  - {fileID: 6581281282418497837}
   - {fileID: 7966210648300856493}
   - {fileID: 7915850110866431105}
   - {fileID: 1010923369920645757}
@@ -444,6 +395,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7079870a595046049a056d92b1268f6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &771753040605273389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875999326499137998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad8deae8091111f4eb30a56c1f4e0d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 229373857
+    DestinationState: 125937960
+    TransitionDuration: 0.25
+    TriggerNameHash: 125937960
+    TransitionIndex: 2
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -2032366093
+    DestinationState: 125937960
+    TransitionDuration: 0.25
+    TriggerNameHash: 125937960
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -526601997
+    DestinationState: 125937960
+    TransitionDuration: 0.25
+    TriggerNameHash: 125937960
+    TransitionIndex: 0
+  m_Animator: {fileID: 6811887678394127708}
 --- !u!1 &8342463390432002868
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,7 +445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4734462489449297079
 Transform:
   m_ObjectHideFlags: 0
@@ -635,15 +621,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1135223553736032, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 731855692135227500}
-    - targetCorrespondingSourceObject: {fileID: 1135223553736032, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 721655532627294858}
-    - targetCorrespondingSourceObject: {fileID: 1135223553736032, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5361795895596948584}
     - targetCorrespondingSourceObject: {fileID: 1033852702106798, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8263693653499664934}
@@ -913,93 +890,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1135223553736032, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}
   m_PrefabInstance: {fileID: 6907869226598808344}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &731855692135227500
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6906734076618540664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad8deae8091111f4eb30a56c1f4e0d3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 229373857
-    DestinationState: 125937960
-    TransitionDuration: 0.25
-    TriggerNameHash: 125937960
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -2032366093
-    DestinationState: 125937960
-    TransitionDuration: 0.25
-    TriggerNameHash: 125937960
-    TransitionIndex: 0
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -526601997
-    DestinationState: 125937960
-    TransitionDuration: 0.25
-    TriggerNameHash: 125937960
-    TransitionIndex: 0
-  m_Animator: {fileID: 6811887678394127708}
---- !u!114 &721655532627294858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6906734076618540664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseUnreliableDeltas: 0
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 1
-  UseQuaternionCompression: 1
-  UseHalfFloatPrecision: 0
-  InLocalSpace: 0
-  Interpolate: 1
-  SlerpPosition: 0
---- !u!114 &5361795895596948584
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6906734076618540664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2486855628
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &6906741641632317198 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1128767714116630, guid: 19601ffa0fe21a0449b6f23a8be4675e, type: 3}

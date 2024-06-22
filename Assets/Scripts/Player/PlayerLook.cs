@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
-public class PlayerLook : MonoBehaviour
+public class PlayerLook : NetworkBehaviour
 {
 
     public Camera cam;
@@ -18,7 +20,9 @@ public class PlayerLook : MonoBehaviour
     private bool isCrouching;
     private float crouchTimer = 0f;
     private bool lerpCrouch = false;
-    private Vector3 initialCameraPosition;
+    public Vector3 initialCameraPosition;
+
+    public NetworkVariable<float> cameraPosition = new NetworkVariable<float> ();
 
     private void Start()
     {
@@ -29,6 +33,12 @@ public class PlayerLook : MonoBehaviour
     private void Update()
     {
         HandleCrouchTransition();
+
+        if(!IsLocalPlayer)
+        {
+            Quaternion rot = Quaternion.Euler(cameraPosition.Value, 0f, 0f);
+            cam.transform.localRotation = rot;
+        }
     }
 
     public void ProcessLook(Vector2 input)
@@ -36,12 +46,18 @@ public class PlayerLook : MonoBehaviour
         float mouseX = input.x;
         float mouseY = input.y;
 
-        //calculate camera rotation for looking up and down
+            //calculate camera rotation for looking up and down
         xRotation -= (mouseY * Time.deltaTime) * ySensitivity;
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
+        Quaternion rot = Quaternion.Euler(xRotation, 0f, 0f);
+        cam.transform.localRotation = rot;
+
         //apply to camera
-        cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        if(IsLocalPlayer)
+        {
+            CameraRotateServerRpc(xRotation);
+        }
 
         //rotate player to look left and right
         transform.Rotate(Vector3.up * (mouseX * Time.deltaTime) * xSensitivity);
@@ -69,5 +85,34 @@ public class PlayerLook : MonoBehaviour
                 cam.transform.localPosition = new Vector3(cameraOffset.x, targetHeight, cameraOffset.z);
             }
         }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        if(!IsLocalPlayer)
+        {
+            cameraPosition.OnValueChanged += OnCameraRotate;
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if(!IsLocalPlayer)
+        {
+            cameraPosition.OnValueChanged -= OnCameraRotate;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void CameraRotateServerRpc(float rotation)
+    {
+        cameraPosition.Value = rotation;
+    }
+
+    private void OnCameraRotate(float oldValue, float newValue)
+    {
+        cam.transform.localRotation = Quaternion.Euler(newValue, 0f, 0f);
     }
 }

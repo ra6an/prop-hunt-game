@@ -46,13 +46,15 @@ public class PlayerMotor : NetworkBehaviour
     public float crouchTimer = 0f;
     public bool lerpCrouch = false;
     public bool sprinting = false;
-    public NetworkVariable<bool> crouching = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> crouching = new NetworkVariable<bool>(value: false, writePerm: NetworkVariableWritePermission.Server);
+    public NetworkVariable<Quaternion> CameraRotation = new NetworkVariable<Quaternion>();
 
     private float currentSpeed = 0f;
 
     //TESTING PURPOSE
-    public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>(new Vector3(0f,0f,0f), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>(new Quaternion(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    //public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>(new Vector3(0f,0f,0f), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    //public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>(new Quaternion(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    //public float crouchingLastHeight;
 
     private void Awake()
     {
@@ -63,6 +65,7 @@ public class PlayerMotor : NetworkBehaviour
         clientNetworkAnimator = GetComponentInChildren<ClientNetworkAnimator>();
 
         currentSpeed = speed;
+        //crouchingLastHeight = 0f;
     }
 
     // Start is called before the first frame update
@@ -75,7 +78,7 @@ public class PlayerMotor : NetworkBehaviour
 
         playerVelocity = Vector3.zero;
 
-        crouching.OnValueChanged += OnCrouchChanged;
+        //crouching.OnValueChanged += OnCrouchChanged;
     }
 
     // Update is called once per frame
@@ -83,24 +86,27 @@ public class PlayerMotor : NetworkBehaviour
     {
         if (IsOwner)
         {
-            // Update position and rotation based on player input
-            Vector3 newPosition = transform.position; // Your position calculation
-            Quaternion newRotation = transform.rotation; // Your rotation calculation
-
-            Position.Value = newPosition;
-            Rotation.Value = newRotation;
-            Debug.Log($"Owner - Position: {newPosition}, Rotation: {newRotation}");
+            
         }
         else
         {
-            // Apply synchronized position and rotation for clients
-            Debug.Log($"Client - Position: {Position.Value}, Rotation: {Rotation.Value}");
-            transform.position = Position.Value;
-            transform.rotation = Rotation.Value;
+            //transform.position = Position.Value;
+            //transform.rotation = Rotation.Value;
         }
 
-        HandleMovement();
-        HandleCrouch();
+        if(IsLocalPlayer)
+        {
+            HandleMovement();
+            HandleCrouch();
+        } else
+        {
+            SyncState();
+        }
+    }
+
+    private void SyncState()
+    {
+
     }
 
     public bool IsPlayerGrounded()
@@ -139,6 +145,7 @@ public class PlayerMotor : NetworkBehaviour
     {
         if (lerpCrouch)
         {
+            //Debug.Log("Cuci");
             crouchTimer += Time.deltaTime * crouchTransitionSpeed;
             float targetHeight = crouching.Value ? crouchHeight : originalHeight;
             float targetCenterY = crouching.Value ? crouchCenterY : originalCenterY;
@@ -183,8 +190,10 @@ public class PlayerMotor : NetworkBehaviour
 
     public void Crouch()
     {
+        //Debug.Log(IsLocalPlayer);
         if(IsLocalPlayer)
         {
+            //Debug.Log("Sada ce crouchat!");
             crouchTimer = 0f;
             lerpCrouch = true;
             CrouchServerRpc(!crouching.Value);
@@ -201,30 +210,37 @@ public class PlayerMotor : NetworkBehaviour
 
         playerVelocity = Vector3.zero;
 
-        if (IsServer)
-        {
+        //if (IsServer)
+        //{
             crouching.OnValueChanged += OnCrouchChanged;
-        }
+        //}
     }
 
-    private void OnEnable()
-    {
-        crouching.OnValueChanged += OnCrouchChanged;
-    }
-
-    private void OnDisable()
+    public override void OnNetworkDespawn()
     {
         crouching.OnValueChanged -= OnCrouchChanged;
     }
 
-    [ServerRpc]
+    //private void OnEnable()
+    //{
+    //    crouching.OnValueChanged += OnCrouchChanged;
+    //}
+
+    //private void OnDisable()
+    //{
+    //    crouching.OnValueChanged -= OnCrouchChanged;
+    //}
+
+    [ServerRpc(RequireOwnership = false)]
     private void CrouchServerRpc(bool isCrouching)
     {
+        Debug.Log($"CrouchingServerRpc called: {isCrouching}");
         crouching.Value = isCrouching;
     }
 
     private void OnCrouchChanged(bool oldValue, bool newValue)
     {
+        Debug.Log($"OnCrouchChanged called. OldValue: {oldValue}, NewValue: {newValue}");
         crouchTimer = 0f;
         lerpCrouch = true;
 
@@ -234,7 +250,7 @@ public class PlayerMotor : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void JumpServerRpc()
     {
         playerVelocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravity);

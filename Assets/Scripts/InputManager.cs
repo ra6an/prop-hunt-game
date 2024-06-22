@@ -40,16 +40,19 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
+        if (!motor.IsLocalPlayer) return;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (!motor.IsLocalPlayer) return;
         motor.ProcessMove(onFoot.Movement.ReadValue<Vector2>());
     }
 
     private void LateUpdate()
     {
+        if (!motor.IsLocalPlayer) return;
         look.ProcessLook(onFoot.Look.ReadValue<Vector2>());
     }
 

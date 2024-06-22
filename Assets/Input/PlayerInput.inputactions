@@ -860,6 +860,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Developer",
+            "id": "023c2057-d941-41a8-9cfe-20e0eff1cfa0",
+            "actions": [
+                {
+                    "name": "Console",
+                    "type": "Button",
+                    "id": "f811da8b-7fcb-4e22-9775-3f1912ff7664",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6e6b4849-1741-4b3f-a469-bedb947c7a50",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Console",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
