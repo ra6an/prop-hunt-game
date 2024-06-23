@@ -901,7 +901,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""6e6b4849-1741-4b3f-a469-bedb947c7a50"",
-                    ""path"": ""<Keyboard>/1"",
+                    ""path"": ""<Keyboard>/backquote"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

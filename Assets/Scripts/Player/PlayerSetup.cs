@@ -42,11 +42,34 @@ public class PlayerSetup : NetworkBehaviour
     {
         base.OnNetworkSpawn();
         if (!IsLocalPlayer) return;
-        string _netID = NetworkManager.Singleton.LocalClientId.ToString();
-        Debug.Log(_netID);
-        PlayerManager _player = GetComponent<PlayerManager>();
+        
+        StartCoroutine(WaitForGameManager());
+        if(!IsHost)
+        {
+            
+        }
+    }
 
-        GameManager.RegisterPlayer(_netID, _player);
+    private IEnumerator WaitForGameManager()
+    {
+        while (GameManager.Instance == null)
+        {
+            yield return null; // Wait for the next frame
+        }
+
+        string _netID = NetworkManager.Singleton.LocalClientId.ToString();
+        //Debug.Log(_netID);
+        //PlayerManager _player = GetComponent<PlayerManager>();
+        string _playerName = "Player " + _netID;
+        GameManager.Instance.RegisterPlayer(_netID, _playerName, 100);
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (!IsLocalPlayer) return;
+        string _netID = NetworkManager.Singleton.LocalClientId.ToString();
+        GameManager.UnRegisterPlayer(_netID);
     }
 
     void AssignRemotePlayer()
@@ -69,6 +92,6 @@ public class PlayerSetup : NetworkBehaviour
             sceneCamera.gameObject.SetActive(true);
         }
 
-        GameManager.UnRegisterPlayer(transform.name);
+        //GameManager.UnRegisterPlayer(transform.name);
     }
 }

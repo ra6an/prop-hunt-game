@@ -21,32 +21,60 @@ public class GameManager : NetworkBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         } else
         {
             Destroy(gameObject);
         }
     }
 
-    private void Start()
+    //private void Start()
+    //{
+    //    if(!IsServer)
+    //    {
+    //        Destroy(gameObject);
+    //    }
+    //}
+
+    //public void RegisterPlayerServerRpc(string _netID, PlayerManager _player)
+    public void RegisterPlayer(string _netID, string _playerName, int _playerHealth)
     {
-        if(!IsServer)
+        string _playerID = PLAYER_ID_PREFIX + _netID;
+        RegisterPlayerServerRpc(_netID, _playerName, _playerHealth);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RegisterPlayerServerRpc(string _netID, string _playerName, int _playerHealth)
+    {
+        PlayerManager _player = new PlayerManager();
+        _player.SetPlayerData(_netID, _playerName, _playerHealth);
+
+        if (!players.ContainsKey(_netID))
         {
-            Destroy(gameObject);
+            players.Add(_netID, _player);
+            Debug.Log("Player registered successfully: " + _netID);
+        }
+
+        foreach (var p in players.Values)
+        {
+            UpdateClientsClientRpc(p.playerData.playerID, p.playerData.playerName, p.playerData.playerHealth);
         }
     }
 
-    private void Update()
+    [ClientRpc]
+    private void UpdateClientsClientRpc(string _netID, string _playerName, int _playerHealth)
     {
-        Debug.Log(players.Count);
-    }
-
-    public static void RegisterPlayer(string _netID, PlayerManager _player)
-    {
-        string _playerID = PLAYER_ID_PREFIX + _netID;
-        players.Add(_playerID, _player);
-        string _playerName = "Player " + _netID;
-        _player.transform.name = _playerName;
-        _player.SetPlayerData(_netID, _playerName, 100);
+        if (IsServer) return;
+        if (!players.ContainsKey(_netID))
+        {
+            PlayerManager _player = new PlayerManager();
+            _player.SetPlayerData(_netID, _playerName, _playerHealth);
+            players.Add(_netID, _player);
+        }
+        else
+        {
+            Debug.LogWarning("Player already exists on client: " + _netID);
+        }
     }
 
     public static void UnRegisterPlayer(string _netID)
@@ -67,17 +95,12 @@ public class GameManager : NetworkBehaviour
         return players[_netID];
     }
 
-    private void OnGUI()
+    public override void OnNetworkSpawn()
     {
-        GUILayout.BeginArea(new Rect(200, 200, 200, 500));
-        GUILayout.BeginVertical();
-
-        foreach (string p in players.Keys) 
+        if(IsServer)
         {
-            GUILayout.Label(p + "  -  " + players[p].transform.name);
+            Debug.Log("GameManager spawned on server.");
         }
-
-        GUILayout.EndVertical();
-        GUILayout.EndArea();
+        playersScore = GameObject.Find("PlayersHUD");
     }
 }

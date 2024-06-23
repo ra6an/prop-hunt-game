@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.Netcode;
 
 public class PlayerUI : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class PlayerUI : MonoBehaviour
 
     void Start()
     {
-        playersScore = GameManager.Instance.playersScore;
+        playersScore = GameObject.Find("PANELS").GetComponent<Panels>().playersScore;
     }
 
     public void UpdateText(string promptMessage)

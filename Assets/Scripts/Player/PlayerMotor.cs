@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
@@ -170,6 +171,12 @@ public class PlayerMotor : NetworkBehaviour
     {
         if(IsLocalPlayer)
         {
+            //Debug.Log(.Count);
+            Dictionary<string, PlayerManager> players = GameManager.Instance.GetPlayersData();
+            foreach (KeyValuePair<string, PlayerManager> p in players)
+            {
+                Debug.Log("Player ID: " + p.Value.playerData.playerID + ", Player Name: " + p.Value.playerData.playerName + ", Player Health: " + p.Value.playerData.playerHealth);
+            }
             crouchTimer = 0f;
             lerpCrouch = true;
             CrouchServerRpc(!crouching.Value);
