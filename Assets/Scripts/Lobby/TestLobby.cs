@@ -131,19 +131,6 @@ public class TestLobby : MonoBehaviour
     {
         try
         {
-            //QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync();
-            //QueryLobbiesOptions query = new QueryLobbiesOptions
-            //{
-            //    Count = 25,
-            //    Filters = new List<QueryFilter> {
-            //        new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT)
-            //    },
-            //    Order = new List<QueryOrder>
-            //    {
-            //        new QueryOrder(false, QueryOrder.FieldOptions.Created)
-            //    }
-            //};
-            //await Lobbies.Instance.JoinLobbyByIdAsync(queryResponse.Results[0].Id);
             JoinLobbyByCodeOptions joinLobbyByCodeOptions = new JoinLobbyByCodeOptions
             {
                 Player = GetPlayer()
