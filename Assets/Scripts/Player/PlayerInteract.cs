@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerInteract : MonoBehaviour
+public class PlayerInteract : NetworkBehaviour
 {
     private Camera cam;
     [SerializeField]
@@ -23,6 +24,7 @@ public class PlayerInteract : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!IsLocalPlayer) return;
         playerUI.UpdateText(string.Empty);
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         Debug.DrawRay(ray.origin, ray.direction * distance);

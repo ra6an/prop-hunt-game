@@ -24,6 +24,14 @@ public class PlayerLook : NetworkBehaviour
 
     public NetworkVariable<float> cameraPosition = new NetworkVariable<float> ();
 
+    [Header("Aim Sphere")]
+    [SerializeField]
+    private GameObject aimSphere;
+    [SerializeField]
+    private LayerMask interactableLayers;
+    [SerializeField]
+    private float maxDistance = 100f;
+
     private void Start()
     {
         initialCameraPosition = cameraOffset;
@@ -33,11 +41,13 @@ public class PlayerLook : NetworkBehaviour
     private void Update()
     {
         HandleCrouchTransition();
+        PositionHelperSphere();
 
         if(!IsLocalPlayer)
         {
             Quaternion rot = Quaternion.Euler(cameraPosition.Value, 0f, 0f);
             cam.transform.localRotation = rot;
+
         }
     }
 
@@ -61,6 +71,20 @@ public class PlayerLook : NetworkBehaviour
 
         //rotate player to look left and right
         transform.Rotate(Vector3.up * (mouseX * Time.deltaTime) * xSensitivity);
+    }
+
+    private void PositionHelperSphere()
+    {
+        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        RaycastHit hit;
+
+        if(Physics.Raycast(ray, out hit, maxDistance, interactableLayers))
+        {
+            aimSphere.transform.position = hit.point;
+        } else
+        {
+            aimSphere.transform.position = ray.GetPoint(maxDistance);
+        }
     }
 
     public void SetCrouching(bool crouch)

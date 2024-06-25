@@ -1,17 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.Netcode;
 using UnityEngine;
 
-public class BasementDoors : Interactable
+public class BasementDoors : NetworkBehaviour
 {
-    [SerializeField]
-    private GameObject basementEntrance;
-    private bool doorOpen;
-    protected override void Interact()
+    private Animator anim;
+    private NetworkVariable<bool> doorOpen = new(false);
+
+    private void Awake()
     {
-        Debug.Log("Otvori/Zatvori");
-        doorOpen = !doorOpen;
-        basementEntrance.GetComponent<Animator>().SetBool("isEntranceOpen", doorOpen);
+        anim = GetComponent<Animator>();
+    }
+
+    public bool GetDoorsState()
+    {
+        return doorOpen.Value;
+    }
+
+    public void ChangeDoorStateForServer(bool value)
+    {
+        doorOpen.Value = value;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void OnInteractOpenDoorsServerRpc(bool value)
+    {
+        doorOpen.Value = value;
+    }
+
+    private void OnDoorOpenChange(bool oldValue,  bool newValue)
+    {
+        anim.SetBool("isEntranceOpen", newValue);
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        doorOpen.OnValueChanged += OnDoorOpenChange;
+
+        OnDoorOpenChange(doorOpen.Value, doorOpen.Value);
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        doorOpen.OnValueChanged -= OnDoorOpenChange;
     }
 }

@@ -68,7 +68,7 @@ public class PlayerMotor : NetworkBehaviour
         crouchCenterY = crouchHeight / 2f;
 
         playerVelocity = Vector3.zero;
-        //animator.SetBool("WithRifle", true);
+        animator.SetBool("WithRifle", true);
     }
 
     // Update is called once per frame
