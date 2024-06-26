@@ -1481,6 +1481,7 @@ GameObject:
   - component: {fileID: 520686322}
   - component: {fileID: 520686321}
   - component: {fileID: 520686325}
+  - component: {fileID: 520686326}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1593,6 +1594,18 @@ MonoBehaviour:
   hostGame: {fileID: 842544164}
   joinGame: {fileID: 1352364897}
   options: {fileID: 965871543}
+--- !u!114 &520686326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520686320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f86bdb3261be2f040a4b56cc5e323c54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &672408392
 GameObject:
   m_ObjectHideFlags: 0
@@ -2223,6 +2236,7 @@ GameObject:
   - component: {fileID: 842544165}
   - component: {fileID: 842544167}
   - component: {fileID: 842544166}
+  - component: {fileID: 842544168}
   m_Layer: 5
   m_Name: HostGame
   m_TagString: Untagged
@@ -2291,6 +2305,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842544164}
   m_CullTransparentMesh: 1
+--- !u!114 &842544168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842544164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bf1d3fe65540664f82e09ba2e56eefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rootCanvas: {fileID: 520686320}
 --- !u!1 &871832616
 GameObject:
   m_ObjectHideFlags: 0
@@ -3486,7 +3513,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1821994794}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 842544168}
+        m_TargetAssemblyTypeName: HostGame, Assembly-CSharp
+        m_MethodName: CreateLobby
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1821994794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4641,6 +4680,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 520686325}
+    - target: {fileID: 4607755585305826864, guid: 21bf4516e69772547bd30f79b2f650d6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BackToMainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 4607755585305826864, guid: 21bf4516e69772547bd30f79b2f650d6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MainMenuController, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8681538943387086911, guid: 21bf4516e69772547bd30f79b2f650d6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

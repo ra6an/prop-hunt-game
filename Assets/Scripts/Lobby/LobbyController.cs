@@ -7,7 +7,13 @@ using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
-public class TestLobby : MonoBehaviour
+public enum GameModes
+{
+    PropHunt,
+    Tag
+}
+
+public class LobbyController : MonoBehaviour
 {
     private Lobby hostLobby;
     private Lobby joinedLobby;
@@ -66,29 +72,31 @@ public class TestLobby : MonoBehaviour
         }
     }
 
-    private async void CreateLobby()
+    public async void CreateLobby(string _lobbyName, string _password, bool _isPrivate, int _maxPlayers, Dictionary<string, DataObject> _lobbyOptions)
     {
         try
         {
-            string lobbyName = "My Lobby";
-            int maxPlayers = 4;
+            string lobbyName = _lobbyName != String.Empty ? _lobbyName : "My Lobby";
+            int maxPlayers = _maxPlayers < 2 || _maxPlayers > 8 ? 2 : _maxPlayers;
 
             CreateLobbyOptions lobbyOptions = new CreateLobbyOptions
             {
-                IsPrivate = true,
+                IsPrivate = _isPrivate,
                 Player = GetPlayer(),
-                Data = new Dictionary<string, DataObject>
-                {
-                    { "GameMode", new DataObject(DataObject.VisibilityOptions.Public, "Prop Hunt", DataObject.IndexOptions.S1) }
-                }
+                Data = _lobbyOptions,
+                Password = _password,
+                //Data = new Dictionary<string, DataObject>
+                //{
+                //    { "GameMode", new DataObject(DataObject.VisibilityOptions.Public, "Prop Hunt", DataObject.IndexOptions.S1) }
+                //},
             };
 
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers);
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
 
             hostLobby = lobby;
             joinedLobby = hostLobby;
 
-            Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers);
+            Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + ", lobby code: " + lobby.LobbyCode);
 
             PrintPlayers(hostLobby);
         } catch (LobbyServiceException e)
@@ -127,16 +135,17 @@ public class TestLobby : MonoBehaviour
         }
     }
 
-    private async void JoinLobbyByCode(string lobbyCode)
+    public async void JoinLobbyByCode(string _lobbyCode, string _lobbyPassword)
     {
         try
         {
             JoinLobbyByCodeOptions joinLobbyByCodeOptions = new JoinLobbyByCodeOptions
             {
-                Player = GetPlayer()
+                Player = GetPlayer(),
+                Password = _lobbyPassword
             };
 
-            Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode, joinLobbyByCodeOptions);
+            Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(_lobbyCode, joinLobbyByCodeOptions);
             joinedLobby = lobby;
 
             PrintPlayers(joinedLobby);
@@ -176,8 +185,19 @@ public class TestLobby : MonoBehaviour
 
     private void PrintPlayers(Lobby lobby)
     {
-        Debug.Log("Players in Lobby " + lobby.Name + " " + lobby.Data["GameMode"].Value);
-        foreach(Player player in lobby.Players)
+        Debug.Log("Players in Lobby " + lobby.Name);
+
+        // Check if the 'GameMode' key exists
+        if (lobby.Data.ContainsKey("GameMode"))
+        {
+            Debug.Log("Players in Lobby " + lobby.Name + " " + lobby.Data["GameMode"].Value);
+        }
+        else
+        {
+            Debug.LogWarning("GameMode key not found in lobby data.");
+        }
+
+        foreach (Player player in lobby.Players)
         {
             Debug.Log(player.Id + " " + player.Data["PlayerName"].Value);
         }
