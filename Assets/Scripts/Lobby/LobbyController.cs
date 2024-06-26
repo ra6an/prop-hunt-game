@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -15,11 +16,13 @@ public enum GameModes
 
 public class LobbyController : MonoBehaviour
 {
+    public string KEY_START_GAME = "JoinKey";
     private Lobby hostLobby;
     public Lobby joinedLobby;
     private float heartbeathTimer;
     private string playerName;
     public string playerId;
+    public event EventHandler<EventArgs> OnGameStarted;
 
     private float lobbyUpdateTimer;
 
@@ -71,6 +74,8 @@ public class LobbyController : MonoBehaviour
 
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
+
+                CheckGameStartStatus();
             }
         }
     }
@@ -88,10 +93,6 @@ public class LobbyController : MonoBehaviour
                 Player = GetPlayer(),
                 Data = _lobbyOptions,
                 Password = _password,
-                //Data = new Dictionary<string, DataObject>
-                //{
-                //    { "GameMode", new DataObject(DataObject.VisibilityOptions.Public, "Prop Hunt", DataObject.IndexOptions.S1) }
-                //},
             };
 
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
@@ -299,5 +300,78 @@ public class LobbyController : MonoBehaviour
         {
             Debug.Log(e);
         }
+    }
+
+    private bool IsLobbyHost()
+    {
+        bool isHost = joinedLobby.HostId == AuthenticationService.Instance.PlayerId;
+        return isHost;
+    }
+
+    // TEST ZA GAME START
+
+    public async void StartGame()
+    {
+        if (joinedLobby == null)
+        {
+            Debug.LogError("No lobby found to start the game.");
+            return;
+        }
+
+        if (!IsLobbyHost()) return;
+
+        try
+        {
+            Debug.Log("Start Game");
+
+            string relayCode = await RelayController.Instance.CreateRelay(joinedLobby.MaxPlayers);
+
+            Lobby _lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject> {
+                    { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, relayCode) } 
+                }
+            });
+
+            joinedLobby = _lobby;
+
+            NetworkManager.Singleton.SceneManager.LoadScene("HorrorScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            HandleCanvas();
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.LogError(e);
+        }
+    }
+
+    //[ServerRpc(RequireOwnership = false)]
+    //private void StartGameServerRpc()
+    //{
+    //    //NetworkManager.Singleton.SceneManager.LoadScene("HorrorScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+    //}
+
+    private void CheckGameStartStatus()
+    {
+        if (joinedLobby == null) return;
+
+        if (joinedLobby.Data[KEY_START_GAME].Value != "0")
+        {
+            if(!IsLobbyHost())
+            {
+                Debug.Log("Setupa Klijenta za game.");
+                RelayController.Instance.JoinRelay(joinedLobby.Data[KEY_START_GAME].Value);
+                //NetworkManager.Singleton.SceneManager.LoadScene("HorrorScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                HandleCanvas();
+            }
+
+            joinedLobby = null;
+
+            //OnGameStarted?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void HandleCanvas()
+    {
+        MainCanvasController.Instance.ShowMainMenuCanvas(false);
     }
 }

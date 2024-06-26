@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,6 +20,10 @@ public class PlayerSetup : NetworkBehaviour
 
     private void Awake()
     {
+        //if(IsLocalPlayer)
+        //{
+        //    gameObject.GetComponentInChildren<Camera>()
+        //}
     }
 
     private void Start()
@@ -31,6 +36,7 @@ public class PlayerSetup : NetworkBehaviour
         else
         {
             sceneCamera = Camera.main;
+            //sceneCamera = cameraPrefab.GetComponent<Camera>();
             if(sceneCamera != null )
             {
                 sceneCamera.gameObject.SetActive(false);
@@ -44,10 +50,6 @@ public class PlayerSetup : NetworkBehaviour
         if (!IsLocalPlayer) return;
         
         StartCoroutine(WaitForGameManager());
-        if(!IsHost)
-        {
-            
-        }
     }
 
     private IEnumerator WaitForGameManager()
@@ -58,11 +60,30 @@ public class PlayerSetup : NetworkBehaviour
         }
 
         string _netID = NetworkManager.Singleton.LocalClientId.ToString();
-        //Debug.Log(_netID);
-        //PlayerManager _player = GetComponent<PlayerManager>();
+        
         string _playerName = "Player " + _netID;
         GameManager.Instance.RegisterPlayer(_netID, _playerName, 100);
+        
+        //if(IsLocalPlayer)
+        //{
+        //}
     }
+
+    //[ServerRpc(RequireOwnership = false)]
+    //private void SetPositionServerRpc(Vector3 position)
+    //{
+    //    transform.position = position;
+    //    SetPositionClientRpc(position);
+    //}
+
+    //[ClientRpc]
+    //private void SetPositionClientRpc(Vector3 position)
+    //{
+    //    if (!IsLocalPlayer)
+    //    {
+    //        transform.position = position;
+    //    }
+    //}
 
     public override void OnNetworkDespawn()
     {
@@ -83,6 +104,7 @@ public class PlayerSetup : NetworkBehaviour
         {
             componentsToDisable[i].enabled = false;
         }
+        //cameraPrefab.SetActive(false);
     }
 
     private void OnDisable()

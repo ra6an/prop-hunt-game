@@ -25,6 +25,27 @@ public class PlayerUI : MonoBehaviour
         playersScore = GameObject.Find("PANELS").GetComponent<Panels>().playersScore;
     }
 
+    private void Update()
+    {
+        if (playersScore == null)
+        {
+            GameObject canvas = GameObject.Find("PANELS");
+            if (playersScore != null)
+            {
+                playersScore = canvas.GetComponent<Panels>().playersScore;
+            }
+        }
+
+        if(promptText == null)
+        {
+            GameObject canvas = GameObject.Find("Canvas");
+            if (canvas != null)
+            {
+                promptText = canvas.transform.Find("PromptText").GetComponent<TextMeshProUGUI>();
+            }
+        }
+    }
+
     public void UpdateText(string promptMessage)
     {
         if (!promptText) return;

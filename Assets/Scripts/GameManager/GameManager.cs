@@ -13,6 +13,12 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField]
     public GameObject playersScore;
+    [SerializeField]
+    public SpawnPoints spawnPoints;
+    [SerializeField]
+    private GameObject playerPrefab;
+
+    private GameObject playersParent;
 
     private static Dictionary<string, PlayerManager> players = new Dictionary<string, PlayerManager>();
 
@@ -28,13 +34,13 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    //private void Start()
-    //{
-    //    if(!IsServer)
-    //    {
-    //        Destroy(gameObject);
-    //    }
-    //}
+    private void Start()
+    {
+        GameObject go = Instantiate(new GameObject());
+        go.transform.position = new Vector3(0f, 0f, 0f);
+        go.name = "PLAYERS";
+        playersParent = go;
+    }
 
     //public void RegisterPlayerServerRpc(string _netID, PlayerManager _player)
     public void RegisterPlayer(string _netID, string _playerName, int _playerHealth)
@@ -100,7 +106,31 @@ public class GameManager : NetworkBehaviour
         if(IsServer)
         {
             Debug.Log("GameManager spawned on server.");
+            StartCoroutine(SetupGame());
         }
         playersScore = GameObject.Find("PlayersHUD");
+    }
+
+    private IEnumerator SetupGame()
+    {
+        yield return new WaitForSeconds(2);
+
+        Debug.Log("Setuping game.... (SpawningPlayers): " + NetworkManager.Singleton.ConnectedClientsList.Count);
+        foreach(var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            SpawnPlayer(client.ClientId);
+        }
+    }
+
+    private void SpawnPlayer(ulong clientId)
+    {
+        Vector3 _spawnPoint = spawnPoints.points[UnityEngine.Random.Range(0, spawnPoints.points.Count)];
+
+        //NetworkObject playerObject = Instantiate(playerPrefab, _spawnPoint, new Quaternion()).GetComponent<NetworkObject>();
+        //playerObject.SpawnAsPlayerObject(clientId);
+        GameObject playerObject = Instantiate(playerPrefab, _spawnPoint, new Quaternion());
+        playerObject.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+
+        playerObject.transform.SetParent(playersParent.transform);
     }
 }

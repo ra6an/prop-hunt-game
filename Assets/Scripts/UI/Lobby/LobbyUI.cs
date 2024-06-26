@@ -51,12 +51,15 @@ public class LobbyUI : MonoBehaviour
             return;
         }
 
-        joinedLobby = lobbyController.joinedLobby;
-        isHost = joinedLobby.HostId == lobbyController.playerId;
-        if(isHost) startLobbyButton.SetActive(true);
+        if(joinedLobby != null)
+        {
+            joinedLobby = lobbyController.joinedLobby;
+            isHost = joinedLobby.HostId == lobbyController.playerId;
+            if(isHost) startLobbyButton.SetActive(true);
         
-        SetLobbyInfo();
-        SetLobbyPlayers();
+            SetLobbyInfo();
+            SetLobbyPlayers();
+        }
     }
 
     private void SetLobbyInfo()
@@ -99,5 +102,10 @@ public class LobbyUI : MonoBehaviour
     {
         mainMenuCanvas.GetComponent<LobbyController>().LeaveLobby();
         mainMenuCanvas.GetComponent<MainMenuController>().BackToMainMenu();
+    }
+
+    public void StartGame()
+    {
+        mainMenuCanvas.GetComponent<LobbyController>().StartGame();
     }
 }

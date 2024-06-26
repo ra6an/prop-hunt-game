@@ -688,7 +688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bef17a319504b8d4ab5d610a5237638d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraPrefab: {fileID: 4432232711491410803, guid: 81536853026843e48a7045b3880fd201, type: 3}
+  cameraPrefab: {fileID: 476777191628904080}
   componentsToDisable:
   - {fileID: 6581281282418497837}
   - {fileID: 7966210648300856493}
