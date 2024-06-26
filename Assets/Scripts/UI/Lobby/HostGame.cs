@@ -36,11 +36,45 @@ public class HostGame : MonoBehaviour
         };
 
         lobbyController.CreateLobby(lobbyName, password, isPrivate, maxPlayers, lobbyData);
+        rootCanvas.GetComponent<MainMenuController>().OnCreateJoinLobby();
     }
 
     public void SetLobbyName(string value)
     {
         lobbyNameInput.text = value;
         lobbyName = value;
+    }
+
+    public void SetPassword(string value)
+    {
+        passwordInput.text = value;
+        password = value;
+    }
+
+    public void SetMaxPlayers(string value)
+    {
+        maxPlayersInput.text = value;
+        //maxPlayers = value;
+
+        switch (value)
+        {
+            case "2": maxPlayers = 2;
+                break;
+            case "3": maxPlayers = 3;
+                break;
+            case "4": maxPlayers = 4;
+                break;
+            case "5": maxPlayers = 5;
+                break;
+            case "6": maxPlayers = 6;
+                break;
+            case "7": maxPlayers = 7;
+                break;
+            case "8": maxPlayers = 8;
+                break;
+            default:
+                maxPlayers = 2;
+                break;
+        }
     }
 }

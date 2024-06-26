@@ -25,6 +25,7 @@ public class JoinGame : MonoBehaviour
     public void JoinLobbyByCode()
     {
         lobbyController.JoinLobbyByCode(lobbyCode, joinLobbyPassword);
+        rootCanvas.GetComponent<MainMenuController>().OnCreateJoinLobby();
     }
 
     public void SetLobbyCode(string value)

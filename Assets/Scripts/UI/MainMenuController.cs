@@ -14,39 +14,46 @@ public class MainMenuController : MonoBehaviour
     private GameObject joinGame;
     [SerializeField]
     private GameObject options;
+    [SerializeField]
+    private GameObject lobby;
 
-    public void OnHostGame()
+    private void CloseEverything()
     {
         title.SetActive(false);
         mainMenuOptions.SetActive(false);
         joinGame.SetActive(false);
+        hostGame.SetActive(false);
         options.SetActive(false);
+        lobby.SetActive(false);
+    }
+
+    public void OnHostGame()
+    {
+        CloseEverything();
         hostGame.SetActive(true);
     }
     public void OnJoinGame()
     {
-        title.SetActive(false);
-        mainMenuOptions.SetActive(false);
+        CloseEverything();
         joinGame.SetActive(true);
-        options.SetActive(false);
-        hostGame.SetActive(false);
     }
     public void OnOptions()
     {
-        title.SetActive(false);
-        mainMenuOptions.SetActive(false);
-        joinGame.SetActive(false);
+        CloseEverything();
         options.SetActive(true);
-        hostGame.SetActive(false);
     }
 
     public void BackToMainMenu()
     {
+        CloseEverything();
         title.SetActive(true);
         mainMenuOptions.SetActive(true);
-        joinGame.SetActive(false);
-        options.SetActive(false);
-        hostGame.SetActive(false);
+    }
+
+    public void OnCreateJoinLobby()
+    {
+        CloseEverything();
+        lobby.SetActive(true);
     }
 
     public void QuitGame()

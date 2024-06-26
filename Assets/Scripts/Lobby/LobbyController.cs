@@ -16,9 +16,10 @@ public enum GameModes
 public class LobbyController : MonoBehaviour
 {
     private Lobby hostLobby;
-    private Lobby joinedLobby;
+    public Lobby joinedLobby;
     private float heartbeathTimer;
     private string playerName;
+    public string playerId;
 
     private float lobbyUpdateTimer;
 
@@ -31,6 +32,7 @@ public class LobbyController : MonoBehaviour
         AuthenticationService.Instance.SignedIn += () =>
         {
             Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
+            playerId = AuthenticationService.Instance.PlayerId;
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -68,6 +70,7 @@ public class LobbyController : MonoBehaviour
                 lobbyUpdateTimer = lobbyUpdateTimerMax;
 
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
+                joinedLobby = lobby;
             }
         }
     }
@@ -148,6 +151,7 @@ public class LobbyController : MonoBehaviour
             Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(_lobbyCode, joinLobbyByCodeOptions);
             joinedLobby = lobby;
 
+            Debug.Log("Lobby joined: " + joinedLobby.Name + "; maxPlayers: " + joinedLobby.MaxPlayers);
             PrintPlayers(joinedLobby);
         } catch (LobbyServiceException e)
         {
@@ -167,7 +171,7 @@ public class LobbyController : MonoBehaviour
         }
     }
 
-    private Player GetPlayer()
+    public Player GetPlayer()
     {
         return new Player
         {
@@ -178,7 +182,7 @@ public class LobbyController : MonoBehaviour
         };
     }
 
-    private void PrintPlayers()
+    public void PrintPlayers()
     {
         PrintPlayers(joinedLobby);
     }
@@ -243,7 +247,7 @@ public class LobbyController : MonoBehaviour
         }
     }
 
-    private async void LeaveLobby()
+    public async void LeaveLobby()
     {
         try
         {
@@ -255,7 +259,7 @@ public class LobbyController : MonoBehaviour
         }
     }
 
-    private async void KickPlayer()
+    public async void KickPlayer()
     {
         try
         {
