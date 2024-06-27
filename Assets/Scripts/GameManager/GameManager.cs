@@ -2,6 +2,7 @@ using Console;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -21,6 +22,9 @@ public class GameManager : NetworkBehaviour
     private GameObject playersParent;
 
     private static Dictionary<string, PlayerManager> players = new Dictionary<string, PlayerManager>();
+    private static List<ulong> playersToBeSpawned = new List<ulong>();
+
+    private bool gameInitialized = false;
 
     private void Awake()
     {
@@ -36,10 +40,26 @@ public class GameManager : NetworkBehaviour
 
     private void Start()
     {
-        GameObject go = Instantiate(new GameObject());
-        go.transform.position = new Vector3(0f, 0f, 0f);
-        go.name = "PLAYERS";
-        playersParent = go;
+        //GameObject go = Instantiate(new GameObject());
+        //go.transform.position = new Vector3(0f, 0f, 0f);
+        //go.name = "PLAYERS";
+        //playersParent = go;
+    }
+
+    private void Update()
+    {
+        if (!gameInitialized) return;
+        if(NetworkManager.Singleton.ConnectedClientsList.Count > players.Count)
+        {
+            foreach(var p in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                string pId = p.ClientId.ToString();
+                if(!players.ContainsKey(pId))
+                {
+                    SpawnPlayer(p.ClientId);
+                }
+            }
+        }
     }
 
     //public void RegisterPlayerServerRpc(string _netID, PlayerManager _player)
@@ -52,19 +72,19 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void RegisterPlayerServerRpc(string _netID, string _playerName, int _playerHealth)
     {
-        PlayerManager _player = new PlayerManager();
-        _player.SetPlayerData(_netID, _playerName, _playerHealth);
+        //PlayerManager _player = new PlayerManager();
+        //_player.SetPlayerData(_netID, _playerName, _playerHealth);
 
-        if (!players.ContainsKey(_netID))
-        {
-            players.Add(_netID, _player);
-            Debug.Log("Player registered successfully: " + _netID);
-        }
+        //if (!players.ContainsKey(_netID))
+        //{
+        //    players.Add(_netID, _player);
+        //    //Debug.Log("Player registered successfully: " + _netID);
+        //}
 
-        foreach (var p in players.Values)
-        {
-            UpdateClientsClientRpc(p.playerData.playerID, p.playerData.playerName, p.playerData.playerHealth);
-        }
+        //foreach (var p in players.Values)
+        //{
+        //    UpdateClientsClientRpc(p.playerData.playerID, p.playerData.playerName, p.playerData.playerHealth);
+        //}
     }
 
     [ClientRpc]
@@ -105,7 +125,8 @@ public class GameManager : NetworkBehaviour
     {
         if(IsServer)
         {
-            Debug.Log("GameManager spawned on server.");
+            Debug.Log("OVO JE SERVER!!!!");
+            //Debug.Log("GameManager spawned on server.");
             StartCoroutine(SetupGame());
         }
         playersScore = GameObject.Find("PlayersHUD");
@@ -120,17 +141,39 @@ public class GameManager : NetworkBehaviour
         {
             SpawnPlayer(client.ClientId);
         }
+
+        gameInitialized = true;
     }
 
     private void SpawnPlayer(ulong clientId)
     {
         Vector3 _spawnPoint = spawnPoints.points[UnityEngine.Random.Range(0, spawnPoints.points.Count)];
 
-        //NetworkObject playerObject = Instantiate(playerPrefab, _spawnPoint, new Quaternion()).GetComponent<NetworkObject>();
-        //playerObject.SpawnAsPlayerObject(clientId);
-        GameObject playerObject = Instantiate(playerPrefab, _spawnPoint, new Quaternion());
-        playerObject.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+        GameObject playerObject = Instantiate(playerPrefab, _spawnPoint, Quaternion.identity);
+        NetworkObject networkObject = playerObject.GetComponent<NetworkObject>();
 
-        playerObject.transform.SetParent(playersParent.transform);
+        if(networkObject != null)
+        {
+            networkObject.SpawnAsPlayerObject(clientId);
+        }
+
+        string pId = clientId.ToString();
+        PlayerManager playerManager = playerObject.GetComponent<PlayerManager>();
+        if (playerManager != null)
+        {
+            playerManager.SetPlayerData(pId, "Player " + pId, 100);
+            players.Add(pId, playerManager);
+        }
+
+        //playerObject.name = clientId.ToString();
+        //string pid = clientId.ToString();
+        //RegisterPlayer(pid, "Player_" + pid, 100);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnPlayerServerRpc(ulong clientId)
+    {
+        Debug.Log("Sending to server");
+        playersToBeSpawned.Add(clientId);
     }
 }

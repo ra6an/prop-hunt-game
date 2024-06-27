@@ -100,7 +100,7 @@ public class LobbyController : MonoBehaviour
             hostLobby = lobby;
             joinedLobby = hostLobby;
 
-            Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + ", lobby code: " + lobby.LobbyCode);
+            //Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + ", lobby code: " + lobby.LobbyCode);
 
             PrintPlayers(hostLobby);
         } catch (LobbyServiceException e)
@@ -128,10 +128,10 @@ public class LobbyController : MonoBehaviour
 
             QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync(query);
 
-            Debug.Log("Lobbies found: " + queryResponse.Results.Count);
+            //Debug.Log("Lobbies found: " + queryResponse.Results.Count);
             foreach(Lobby l in queryResponse.Results)
             {
-                Debug.Log(l.Name + " " + l.MaxPlayers + " " + l.Data["GameMode"]);
+                //Debug.Log(l.Name + " " + l.MaxPlayers + " " + l.Data["GameMode"]);
             }
         } catch (LobbyServiceException e)
         {
@@ -152,7 +152,7 @@ public class LobbyController : MonoBehaviour
             Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(_lobbyCode, joinLobbyByCodeOptions);
             joinedLobby = lobby;
 
-            Debug.Log("Lobby joined: " + joinedLobby.Name + "; maxPlayers: " + joinedLobby.MaxPlayers);
+            //Debug.Log("Lobby joined: " + joinedLobby.Name + "; maxPlayers: " + joinedLobby.MaxPlayers);
             PrintPlayers(joinedLobby);
         } catch (LobbyServiceException e)
         {
@@ -195,7 +195,7 @@ public class LobbyController : MonoBehaviour
         // Check if the 'GameMode' key exists
         if (lobby.Data.ContainsKey("GameMode"))
         {
-            Debug.Log("Players in Lobby " + lobby.Name + " " + lobby.Data["GameMode"].Value);
+            //Debug.Log("Players in Lobby " + lobby.Name + " " + lobby.Data["GameMode"].Value);
         }
         else
         {
@@ -314,7 +314,7 @@ public class LobbyController : MonoBehaviour
     {
         if (joinedLobby == null)
         {
-            Debug.LogError("No lobby found to start the game.");
+            //Debug.LogError("No lobby found to start the game.");
             return;
         }
 
@@ -322,7 +322,7 @@ public class LobbyController : MonoBehaviour
 
         try
         {
-            Debug.Log("Start Game");
+            //Debug.Log("Start Game");
 
             string relayCode = await RelayController.Instance.CreateRelay(joinedLobby.MaxPlayers);
 
@@ -358,7 +358,7 @@ public class LobbyController : MonoBehaviour
         {
             if(!IsLobbyHost())
             {
-                Debug.Log("Setupa Klijenta za game.");
+                //Debug.Log("Setupa Klijenta za game.");
                 RelayController.Instance.JoinRelay(joinedLobby.Data[KEY_START_GAME].Value);
                 //NetworkManager.Singleton.SceneManager.LoadScene("HorrorScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
                 HandleCanvas();

@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerManager))]
 public class PlayerSetup : NetworkBehaviour
 {
-    public GameObject cameraPrefab;
+    public GameObject playerCamera;
 
     [SerializeField]
     Behaviour[] componentsToDisable;
@@ -30,16 +30,28 @@ public class PlayerSetup : NetworkBehaviour
     {
         if(!IsLocalPlayer)
         {
+            Debug.Log("Nije lokal player!");
             DisableComponents();
             AssignRemotePlayer();
+
+            if(playerCamera != null)
+            {
+                playerCamera.gameObject.SetActive(false);
+            }
         }
         else
         {
+            Debug.Log("Jeste lokal player!");
             sceneCamera = Camera.main;
-            //sceneCamera = cameraPrefab.GetComponent<Camera>();
+
             if(sceneCamera != null )
             {
                 sceneCamera.gameObject.SetActive(false);
+            }
+
+            if(playerCamera != null )
+            {
+                playerCamera.gameObject.SetActive(true);
             }
         }
     }
@@ -59,11 +71,16 @@ public class PlayerSetup : NetworkBehaviour
             yield return null; // Wait for the next frame
         }
 
-        string _netID = NetworkManager.Singleton.LocalClientId.ToString();
+        //string _netID = NetworkManager.Singleton.LocalClientId.ToString();
         
-        string _playerName = "Player " + _netID;
-        GameManager.Instance.RegisterPlayer(_netID, _playerName, 100);
-        
+        //string _playerName = "Player " + _netID;
+        //GameManager.Instance.RegisterPlayer(_netID, _playerName, 100);
+
+        //if (!IsHost)
+        //{
+        //    GameManager.Instance.SpawnPlayerServerRpc(NetworkManager.Singleton.LocalClientId);
+        //}
+
         //if(IsLocalPlayer)
         //{
         //}
